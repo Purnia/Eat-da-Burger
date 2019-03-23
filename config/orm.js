@@ -1,8 +1,5 @@
 
 // Import MySQL connection.
-var connection = require("./connection.js");
-
-// Import MySQL connection.
 var connection = require("../config/connection.js");
 
 // Helper function for SQL syntax.
@@ -24,7 +21,7 @@ function printQuestionMarks(num) {
 function objToSql(ob) {
   var arr = [];
 
-  // loop through the keys and push the key/value as a string int arr
+  // loop through the keys and push the key/value as a string into arr
   for (var key in ob) {
     var value = ob[key];
     // check to skip hidden properties
@@ -44,7 +41,7 @@ function objToSql(ob) {
 }
 
 
-
+//the following object will then be exported so it can be used to execute mysql commands inside the models folder
 // selectAll method
 var orm = {
   selectAll: function(tableName, cb) {
@@ -56,13 +53,21 @@ var orm = {
       cb(result);
     });
   },
+
+  
  
   //insertOne method for new entry
 
-  insertOne: function(table, cols, vals, cb) {
-     var queryString = "INSERT INTO " + table + " ( " + cols.toString(); + ") ";
-     queryString += "Values (" + printQuestionMarks(vals.length) + ") ";
+  insertOne: function(tableName, cols, vals, cb) {
+     var queryString = "INSERT INTO " + tableName;
+      queryString += " (";
+      queryString += cols.toString(); 
+      queryString += ") ";
+      queryString += "VALUES (";
+      queryString += printQuestionMarks(vals.length);
+      queryString += ") ";
 
+  
     
      connection.query(queryString, vals, function(err, result) {
         if (err) {
@@ -73,13 +78,16 @@ var orm = {
     
   },
 
+ 
+
   
   // update function
   update: function(table, objColVals, condition, cb) {
     var queryString = "UPDATE " + table;
-
-    queryString += " SET "+ objToSql(objColVals);
-    queryString += " WHERE " + condition;
+    queryString += " SET ";
+    queryString += objToSql(objColVals);
+    queryString += " WHERE ";
+    queryString += condition;
 
     console.log(queryString);
     connection.query(queryString, function(err, result) {
