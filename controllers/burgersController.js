@@ -26,6 +26,7 @@ router.get("/", function(req, res) {
 
 //posts new burgers inside db
 router.post("/api/burgers", function(req, res) {
+  console.log("in the post route");
   burger.insertOne([
     "burger_name", "devoured"
    ], [
@@ -41,9 +42,10 @@ router.put("/api/burgers/:id", function(req, res) {
   var condition = "id = " + req.params.id;
 
   console.log("condition", condition);
+  console.log('req.body: ', req.body)
 
   burger.update({
-    devoured: req.body.devoured
+    devoured: true
   }, condition, function(result) {
     if (result.changedRows == 0) {
       // If no rows were changed, then the ID must not exist, so 404
